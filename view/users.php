@@ -3,23 +3,21 @@
 <form action="" method="POST">
 	<table>
 		<tr>
-			<td>id</td>
 			<td>name</td>
 			<td>role</td>
 		</tr>
 		<?php foreach ($users as $user): ?>
 			<tr>
-				<td><?=$user['id']?></td>
 				<td><?=$user['name']?></td>
 				<td>
 					<?php if ($user['role'] < 2): ?>
-						<select name="<?=$user['id']?>">
+						<select name="<?=$user['name']?>">
 							<option value="0" <?=($user['role'] == 0) ? 'selected' : '' ;?>>Admin</option>
 							<option value="1" <?=($user['role'] == 1) ? 'selected' : '' ;?>>Manager</option>
 						</select>
-						<?php else: ?>
-							client
-						<?php endif; ?>
+					<?php else: ?>
+						client
+					<?php endif; ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>
@@ -27,7 +25,7 @@
 	<input type="submit" value="Изменить">
 </form>
 
-<form action="?view=reg" method="POST">
+<form action="?view=add_user" method="POST">
 	<p><input type="text" name="name" placeholder="Логин" required></p>
 	<p><input type="password" name="pass" placeholder="Пароль" required></p>
 	<p>

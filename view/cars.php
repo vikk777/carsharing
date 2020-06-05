@@ -8,7 +8,8 @@
 			<td>model</td>
 			<td>color</td>
 			<td>price</td>
-			<td>aviable</td>
+			<td>image</td>
+			<!-- <td>aviable</td> -->
 		</tr>
 		<?php foreach ($cars as $car): ?>
 			<tr>
@@ -17,7 +18,20 @@
 				<td><?=$car['model']?></td>
 				<td style="background: <?=$car['color']?>">&nbps;</td>
 				<td><?=$car['price']?></td>
-				<td><?=($car['aviable']) ? 'Да' : 'Нет'?></td>
+				<!-- <td><?=($car['aviable']) ? 'Да' : 'Нет'?></td> -->
+				<td>
+					<img src="<?=$car['img']?>" alt="">
+					<p></p>
+				</td>
+				<td>
+					<?php if ($_SESSION['role'] == 2): ?>
+						<form action="?view=add_request" method="POST">
+							<input type="hidden" name="client" value="<?=$_SESSION['name']?>">
+							<input type="hidden" name="car" value="<?=$car['id']?>">
+							<input type="submit" value="Подать заявку">
+						</form>
+					<?php endif; ?>
+				</td>
 			</tr>
 		<?php endforeach; ?>
 	</table>
@@ -27,7 +41,7 @@
 
 <?php if ($_SESSION['role'] == 1): ?>
 	<h2>Добавление автомобиля</h2>
-	<form action="" method="POST">
+	<form enctype="multipart/form-data" action="" method="POST">
 		<p>
 			<label for="id">Номер авто</label>
 			<input type="text" name="id" placeholder="000000" required></p>
@@ -39,7 +53,10 @@
 				<?php endforeach; ?>
 			</select>
 		</p>
-		<p><input type="text" name="model" placeholder="Модель" required></p>
+		<p>
+			<label for="id">Модель</label>
+			<input type="text" name="model" placeholder="BMW X5" required>
+		</p>
 		<p>
 			<label for="color">Цвет</label>
 			<input type="color" name="color" required>
@@ -51,16 +68,12 @@
 			<label for="aviable">Доступна</label>
 			<input type="checkbox" name="aviable" id="aviable" checked="true">
 		</p>
+		<p>
+			<label for="img">Изображение</label>
+			<input type="hidden" name="MAX_FILE_SIZE" value="100000">
+			<input name="img" type="file">
+		</p>
 		
 		<input type="submit" value="Добавить авто">
 	</form>
-
-	<?php if (!empty($_POST)): ?>
-		<?php if (!isset($_SESSION['warning'])): ?>
-			<p>Автомобиль успешно добавлен.</p>
-		<?php else: ?>
-			<p><?=$_SESSION['warning']?></p>
-			<?php unset($_SESSION['warning']); ?>
-		<?php endif; ?>
-	<?php endif; ?>
 <?php endif; ?>

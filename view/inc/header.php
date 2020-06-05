@@ -24,12 +24,18 @@
 
 	<!-- Управление магазином для управляющего -->
 	<?php if ($_SESSION['role'] == 1): ?>
-		<!-- <a href="?view=manager&obj=myshops">Магазины</a> -->
+		<a href="?view=clients">Клиенты</a>
+	<?php endif; ?>
+	
+	<!-- Для клиента -->
+	<?php if ($_SESSION['role'] == 2): ?>
+		<a href="?view=cabinet">Кабинет</a>
 	<?php endif; ?>
 
-	<!-- Выход -->
 	<?php if (is_authorized()): ?>
 		<a href="?view=cars">Автомобили</a>
+		<a href="?view=requests">Заявки</a>
+		<a href="?view=contracts">Договоры</a>
 		<a href="?view=out">Выйти</a>
 	<?php endif; ?>
 </div>

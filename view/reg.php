@@ -4,14 +4,8 @@
 <form action="" method="POST">
 	<p><input type="text" name="name" placeholder="Логин" required></p>
 	<p><input type="password" name="pass" placeholder="Пароль" required></p>
-	<input type="submit">
+	<p><input type="text" name="license" placeholder="Серия и номер пасорта" pattern="[0-9]{10}" required></p>
+	<p>Телефон в формате: +7xxxxxxxxxx</p>
+	<p><input type="tel" name="phone" pattern="+7[0-9]{10}" placeholder="Номер телефона" value="+7" required></p>
+	<input type="submit" placeholder="Зарегистрироваться">
 </form>
-
-<?php if (!empty($_POST)): ?>
-	<?php if (!isset($_SESSION['error'])): ?>
-		<p>Пользователь успешно добавлен. Дождитесь, пока администратор проверит ваши данные.</p>
-	<?php else: ?>
-		<p><?=$_SESSION['error']?></p>
-		<?php unset($_SESSION['error']); ?>
-	<?php endif; ?>
-<?php endif; ?>

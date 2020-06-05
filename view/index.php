@@ -7,6 +7,7 @@
 <?php if (!isset($_SESSION['error'])): ?>
 
 	<?include $view.'.php';?>
+	<?php get_flashed(); ?>
 
 <?php else: ?>
 	<p><?=$_SESSION['error']?></p>
