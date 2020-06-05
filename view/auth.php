@@ -1,18 +1,14 @@
 <?php defined('COURSE') or exit('Acces denied');?>
 
-<p>Введите логин и пароль</p>
-
-<form method="POST">
-	<p><input type="text" name="name" placeholder="Логин" required></p>
-	<p><input type="password" name="pass" placeholder="Пароль" required></p>
-	<input type="submit" value="login">
+<form action="" method="POST">
+	<div class="col-md-4 col-md-offset-3">
+		<h2>Введите логин и пароль</h2>
+		<div class="form-group">
+			<input class="form-control" type="text" name="name" placeholder="Логин" value="<?=$_POST['name']?>" required>
+		</div>
+		<div class="form-group">
+			<input class="form-control" type="password" name="pass" placeholder="Пароль" required>
+		</div>
+		<input class="btn btn-primary form-control" type="submit" value="Войти">
+	</div>
 </form>
-
-<?php if (!empty($_POST)): ?>
-	<?php if (!isset($_SESSION['warning'])): ?>
-		<p>Добро пожаловать, <?=$_SESSION['name']?></p>
-	<?php else: ?>
-		<p><?=$_SESSION['warning']?></p>
-		<?php unset($_SESSION['warning']); ?>
-	<?php endif; ?>
-<?php endif; ?>

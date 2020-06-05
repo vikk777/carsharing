@@ -6,15 +6,27 @@
 
 <?php if (!isset($_SESSION['error'])): ?>
 
-	<?include $view.'.php';?>
-	<?php get_flashed(); ?>
+	<div class="row">
+		<?include $view.'.php';?>
+	</div>
+	<br><br>
+	<div class="row">
+		<?php if (isset($_SESSION['warning'])): ?>
+		<div class="col-md-6 col-md-offset-2">
+			<p class="alert alert-danger"><?php get_flashed(); ?></p>
+		</div>
+		<?php endif ?>
+	</div>
 
 <?php else: ?>
-	<p><?=$_SESSION['error']?></p>
+	<div class="row">
+		<p class="alert alert-danger"><?=$_SESSION['error']?></p>
+	</div>
 	<?php unset($_SESSION['error']); ?>
 <?php endif; ?>
 
-</div>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</div> <!-- content -->
+</div> <!-- fluid -->
+<script src="<?=VIEW.'js/bootstrap.min.js'?>" crossorigin="anonymous"></script>
 </body>
 </html>

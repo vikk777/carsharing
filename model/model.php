@@ -16,11 +16,11 @@
 
 		if ($res->num_rows > 0){
 			$_SESSION['error'] = "Пользователь с именем '$name' уже существует.";
-			return;
+			return false;
 		}
 
 		$query = "INSERT INTO users 
-					VALUES ('$name', '" . hash('sha256', $pass) . "', $role)";
+					VALUES ('$name', '" . hash('sha256', $pass) . "', $role, 0)";
 
 		$res = $mysql->query($query);
 
@@ -45,6 +45,7 @@
 			$_SESSION['name'] = $name;
 			$_SESSION['role'] = $role;
 			$_SESSION['success'] = 'Вы успешно зарегистрировались.';
+			return true;
 		}
 	}
 
@@ -63,11 +64,11 @@
 			if (hash('sha256', $pass) == $row['password']){
 				if ($row['banned']) {
 					$_SESSION['warning'] = 'Ваша учетная запись заблокирована.';
-					return;
+					return false;
 				}
 				$_SESSION['name'] = $row['name'];
 				$_SESSION['role'] = $row['role'];
-				return;
+				return true;
 			}
 		}
 

@@ -31,8 +31,8 @@
 				$role = 2;
 				$license = (isset($_POST['license'])) ? $_POST['license'] : '';
 				$phone = (isset($_POST['phone'])) ? $_POST['phone'] : '';
-				registration_user($name, $pass, $role, $license, $phone);
-				// redirect();
+				if (registration_user($name, $pass, $role, $license, $phone))
+					redirect();
 			}
 			elseif (is_authorized()) {
 				$view = 'main';
@@ -43,8 +43,8 @@
 			if (!empty($_POST)){
 				$name = $_POST['name'];
 				$pass = $_POST['pass'];
-				authorization($name, $pass);
-				// redirect();
+				if (authorization($name, $pass))
+					redirect();
 			}elseif (is_authorized()) {
 				$view = 'main';
 			}
@@ -163,6 +163,9 @@
 		case 'requests':
 			if (is_authorized()) {
 				$requests = ($_SESSION['role'] == 2) ? requests($_SESSION['name']) : requests();
+				}
+				else{
+					$view = 'main';
 				}
 			break;
 

@@ -35,11 +35,11 @@
 	function get_flashed()
 	{
 		if (isset($_SESSION['warning'])) {
-			echo "<p>" . $_SESSION['warning'] . "</p>";
+			echo $_SESSION['warning'];
 			unset($_SESSION['warning']);
 		}
 		if (isset($_SESSION['success'])) {
-			echo "<p>" . $_SESSION['success'] . "</p>";
+			echo $_SESSION['success'];
 			unset($_SESSION['success']);
 		}
 	}
