@@ -4,7 +4,7 @@
 	<div class="col-md-4 col-md-offset-3">
 		<h2>Введите данные для регистрации</h2>
 		<div class="form-group">
-			<input class="form-control" type="text" name="name" placeholder="Логин" value="<?=$_POST['name']?>" required>
+			<input class="form-control" type="text" name="name" placeholder="Логин" value="<?=(isset($_POST['name']) ? $_POST['name'] : '')?>" required>
 		</div>
 		<div class="form-group">
 			<input class="form-control" type="password" name="pass" placeholder="Пароль" required>
@@ -16,7 +16,7 @@
 		<div class="form-group">
 			<label for="phone">Телефон в формате: +7xxxxxxxxxx
 	</label>
-			<input class="form-control" type="tel" name="phone" pattern="+7[0-9]{10}" placeholder="Номер телефона" value="+7" value="<?=$_POST['phone']?>" required>
+			<input class="form-control" type="tel" name="phone" pattern="+7[0-9]{10}" placeholder="Номер телефона" value="+7" value="<?=(isset($_POST['phone']) ? $_POST['phone'] : '')?>" required>
 		</div>
 			<input class="btn btn-primary form-control" type="submit" value="Зарегистрироваться">
 	</div>
