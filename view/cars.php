@@ -88,7 +88,7 @@
 			</label>
 		</div>
 		<div class="form-group">
-			<label for="img">Изображение</label>
+			<label for="img">Изображение (100 KB)</label>
 			<input class="form-control" type="hidden" name="MAX_FILE_SIZE" value="100000">
 			<input class="form-control" name="img" type="file">
 		</div>
