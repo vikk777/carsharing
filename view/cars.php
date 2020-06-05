@@ -9,7 +9,9 @@
 			<td>color</td>
 			<td>price</td>
 			<td>image</td>
-			<!-- <td>aviable</td> -->
+			<?php if ($_SESSION['role'] == 1): ?>
+				<td>aviable</td>
+			<?php endif ?>
 		</tr>
 		<?php foreach ($cars as $car): ?>
 			<tr>
@@ -18,20 +20,22 @@
 				<td><?=$car['model']?></td>
 				<td style="background: <?=$car['color']?>">&nbps;</td>
 				<td><?=$car['price']?></td>
-				<!-- <td><?=($car['aviable']) ? 'Да' : 'Нет'?></td> -->
 				<td>
 					<img src="<?=$car['img']?>" alt="">
 					<p></p>
 				</td>
-				<td>
-					<?php if ($_SESSION['role'] == 2): ?>
+				<?php if ($_SESSION['role'] == 1): ?>
+					<td><?=($car['aviable']) ? 'Да' : 'Нет'?></td>
+				<?php endif ?>
+				<?php if ($_SESSION['role'] == 2): ?>
+					<td>
 						<form action="?view=add_request" method="POST">
 							<input type="hidden" name="client" value="<?=$_SESSION['name']?>">
 							<input type="hidden" name="car" value="<?=$car['id']?>">
 							<input type="submit" value="Подать заявку">
 						</form>
-					<?php endif; ?>
-				</td>
+					</td>
+				<?php endif; ?>
 			</tr>
 		<?php endforeach; ?>
 	</table>

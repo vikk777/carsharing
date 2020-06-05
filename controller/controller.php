@@ -10,7 +10,7 @@
 	session_start();
 
 	if (!isset($_SESSION['role'])) {
-		$_SESSION['role'] = 2;
+		$_SESSION['role'] = 3;
 	}
 
 	require_once MODEL;
@@ -18,6 +18,9 @@
 	require_once 'functions/functions.php';
 	
 	$view = empty($_GET['view']) ? 'main' : $_GET['view'];
+
+	check_contracts();
+	check_user();
 
 	switch ($view) {
 		case 'reg':
@@ -85,6 +88,10 @@
 
 		case 'clients':
 			if ($_SESSION['role'] == 1) {
+				if (!empty($_POST)) {
+					$name = $_POST['name'];
+					change_user_status($name);
+				}
 				$clients = get_clients();
 			}
 			break;

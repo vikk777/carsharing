@@ -9,6 +9,7 @@
 			<td>car</td>
 			<td>begin date</td>
 			<td>expire date</td>
+			<td>expired</td>
 		</tr>
 		<?php foreach ($contracts as $contract): ?>
 			<tr>
@@ -18,6 +19,7 @@
 				<td><?=$contract['car']?></td>
 				<td><?=strftime('%d-%m-%Y', $contract['date_begin'])?></td>
 				<td><?=strftime('%d-%m-%Y', $contract['date_end'])?></td>
+				<td><?=($contract['expired']) ? 'Да' : 'Нет' ?></td>
 			</tr>
 		<?php endforeach; ?>
 	</table>

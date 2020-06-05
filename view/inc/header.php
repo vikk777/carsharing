@@ -4,9 +4,10 @@
 <html lang="ru">
 <head>
 	<meta charset="UTF-8">
-	<title>Title</title>
+	<title>Carsharing</title>
 	<link rel="stylesheet" href="<?=VIEW?>css/style.css">
-<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body>
 <div class="menu">
@@ -28,7 +29,7 @@
 	<?php endif; ?>
 	
 	<!-- Для клиента -->
-	<?php if ($_SESSION['role'] == 2): ?>
+	<?php if (is_authorized() and $_SESSION['role'] == 2): ?>
 		<a href="?view=cabinet">Кабинет</a>
 	<?php endif; ?>
 

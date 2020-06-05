@@ -51,21 +51,20 @@
 // Авторизация
 	function authorization($name, $pass)	{
 		global $mysql;
-		$query = "SELECT name, password, role
+		$query = "SELECT name, password, role, banned
 					FROM users
 					WHERE `name`='$name'";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		if ($res->num_rows > 0){
 			$row = $res->fetch_assoc();
 
 			if (hash('sha256', $pass) == $row['password']){
+				if ($row['banned']) {
+					$_SESSION['warning'] = 'Ваша учетная запись заблокирована.';
+					return;
+				}
 				$_SESSION['name'] = $row['name'];
 				$_SESSION['role'] = $row['role'];
 				return;
@@ -83,12 +82,7 @@
 					FROM users
 					ORDER BY role";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		$users = array();
 
@@ -106,12 +100,7 @@
 		$query = "SELECT name, role FROM users
 					WHERE role < 2";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		while ($row = $res->fetch_assoc()) {
 			$name = $row['name'];
@@ -136,15 +125,12 @@
 	{
 		global $mysql;
 
-		$query = "SELECT *
-					FROM clients";
+		$query = "SELECT `clients`.*, `users`.`banned`
+					FROM clients
+					JOIN users
+					ON `users`.`name` = `clients`.`name`";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		$clients = array();
 
@@ -161,15 +147,9 @@
 		global $mysql;
 
 		$query = "SELECT *
-					FROM cars
-					WHERE aviable = 1";
+					FROM cars" . (($_SESSION['role'] == 2) ? " WHERE aviable = 1" : '' );
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		$cars = array();
 
@@ -204,12 +184,7 @@
 					FROM cars
 					WHERE `id` = '$id'";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		if ($res->num_rows > 0){
 			$_SESSION['warning'] = "Автомобиль с таким номером уже существует.";
@@ -219,12 +194,7 @@
 		$query = "INSERT INTO cars
 					VALUES ('$id', '$type', '$model', '$color', '$price', '$aviable', '$uploadfile')";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		$_SESSION['success'] = 'Автомобиль успешно добавлен.';
 	}
@@ -237,12 +207,7 @@
 					FROM requests";
 		$query .= (!empty($client)) ? " WHERE `client` = '$client'" : "";
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		$requests = array();
 
@@ -286,12 +251,6 @@
 
 				$res = query($query);
 
-				// $query = "UPDATE clients
-				// 			SET account = ${row['account']} - ${row['price']}
-				// 			WHERE name = '$client'";
-
-				// $res = query($query);
-
 				return true;
 			}
 			else{
@@ -310,10 +269,26 @@
 		$res = query($query);
 		
 		$date_begin = strtotime('now');
-		$date_end = strtotime('now + 1 day');
+		$date_end = strtotime('now + 1 minute');
+		// $date_end = strtotime('now + 1 day');
 		
 		$query = "INSERT INTO contracts (`client`, `employe`, `date_begin`, `date_end`, `car`)
 					VALUES ('$client', '$employe', '$date_begin', '$date_end', '$car')";
+
+		$res = query($query);
+
+		$query = "SELECT `clients`.`account`, `cars`.`price`
+					FROM clients
+					JOIN cars
+					ON `clients`.`name` = '$client' AND
+					`cars`.`id` = '$car'";
+
+		$res = query($query);
+		$row = $res->fetch_assoc();
+
+		$query = "UPDATE clients
+					SET account = ${row['account']} - ${row['price']}
+					WHERE name = '$client'";
 
 		$res = query($query);
 
@@ -341,15 +316,9 @@
 		global $mysql;
 
 		$query = "SELECT *
-					FROM contracts";
-		$query .= (!empty($client)) ? " WHERE `client` = '$client'" : "";
+					FROM contracts" . ((!empty($client)) ? " WHERE `client` = '$client'" : "");
 
-		$res = $mysql->query($query);
-
-		if (!$res){
-			echo $mysql->errno . " : " . $mysql->error;
-			return;
-		}
+		$res = query($query);
 
 		$contracts = array();
 
@@ -358,6 +327,33 @@
 		}
 
 		return $contracts;
+	}
+
+	function check_contracts()
+	{
+		global $mysql;
+
+		$query = "SELECT id, date_end, car
+					FROM contracts
+					WHERE expired = 0";
+
+		$res = query($query);
+
+		$queryContract = "UPDATE contracts
+							SET expired = 1
+							WHERE id = ";
+
+		$queryCar = "UPDATE cars
+						SET aviable = 1
+						WHERE id = ";
+
+		while ($row = $res->fetch_assoc()) {
+			if ($row['date_end'] < strtotime('now')) {
+				echo $query . "'${row['car']}'";
+				query($queryCar . "'${row['car']}'");
+				query($queryContract . "'${row['id']}'");
+			}
+		}
 	}
 
 	function cabinet()
@@ -381,6 +377,34 @@
 					WHERE name = '${_SESSION['name']}'";
 
 		$res = query($query);
+	}
+
+	function change_user_status($name)
+	{
+		global $mysql;
+
+		$query = "UPDATE users
+					SET banned = NOT banned
+					WHERE name = '$name'";
+
+		$res = query($query);
+	}
+
+	function check_user()
+	{
+		global $mysql;
+
+		$query = "SELECT name
+					FROM users
+					WHERE name = '${_SESSION['name']}' AND
+					banned = 1";
+
+		$res = query($query);
+		if ($res->num_rows > 0) {
+			unset($_SESSION['name']);
+			$_SESSION['role'] = 3;
+			$_SESSION['error'] = 'Ваша учетная запись была заблокирована.';
+		}
 	}
 
  ?>
