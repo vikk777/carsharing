@@ -19,8 +19,10 @@
 	
 	$view = empty($_GET['view']) ? 'main' : $_GET['view'];
 
-	check_contracts();
-	check_user();
+	if (is_authorized()) {
+		check_contracts();
+		check_user();
+	}
 
 	switch ($view) {
 		case 'reg':
